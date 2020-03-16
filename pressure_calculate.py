@@ -135,5 +135,5 @@ for f in range(len(filename)):
         V34= AVH_ls[m4+1]
         method4 = 1-V24/V34
 
-        print('%d pressure rate: %.3f' %(m4+1, method3), end='')
+        print('%d pressure rate: %.3f' %(m4+1, method4), end='')
         print("%")
