@@ -9,6 +9,7 @@ import matplotlib.pylab as plt
 
 path = '../data/data_set/test/msk/*'
 filename = glob.glob(path)
+filename.sort()
 
 for f in range(len(filename)):
 
@@ -35,7 +36,7 @@ for f in range(len(filename)):
     r_approx = []
     for cnt in contours:
 
-        epsilon = 0.095*cv2.arcLength(cnt, True)
+        epsilon = 0.09*cv2.arcLength(cnt, True)
         approx = cv2.approxPolyDP(cnt, epsilon, True)
         cv2.drawContours(img1, [approx], 0,(255,0,0), 1)
 
