@@ -7,8 +7,6 @@ import numpy as np
 import matplotlib.pylab as plt
 
 
-
-
 path = '../data/data_set/test/msk/*'
 filename = glob.glob(path)
 
