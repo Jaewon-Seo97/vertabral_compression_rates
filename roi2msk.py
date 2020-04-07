@@ -8,8 +8,6 @@ import os
 rfolpath= "C:/Users/user/Untitled Folder/roi"
 rfolname= os.listdir(rfolpath)
 
-print(rfolname)
-
 for fl in range(len(rfolname)):
 
     rpath= "C:/Users/user/Untitled Folder/roi/"+rfolname[fl]+"/*"
@@ -27,7 +25,7 @@ for fl in range(len(rfolname)):
         x= roi[rname]['x']
         y= roi[rname]['y']
 
-#         pn= len(x)
+        pn= len(x)
         loc= np.ndarray((pn,2), dtype= np.int32)
 
         for lo in range(len(x)):
@@ -41,10 +39,14 @@ for fl in range(len(rfolname)):
 
         img1= cv2.fillPoly(img, [locset[fw]], (255,255,255))
 
-
+        
     mskp= "C:/Users/user/Untitled Folder/mask/"
     mskn= "%s.png" %rfolname[fl]
     cv2.imwrite(mskp+mskn, img1)
+    
+    pimg= Image.open(mskp+mskn)
+    reimg= pimg.resize((512,512))
+    reimg.save(mskp+mskn)
 
-    plt.figure(figsize=(30,30))
-    plt.imshow(img1)
+#     plt.figure(figsize=(30,30))
+#     plt.imshow(img1)
