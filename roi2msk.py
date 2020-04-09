@@ -4,16 +4,24 @@ import cv2
 import matplotlib.pyplot as plt
 import glob
 import os
+import pydicom
+from PIL import Image
 
-rfolpath= "C:/Users/user/Untitled Folder/roi"
-rfolname= os.listdir(rfolpath)
+rfolpath= "../data/roi"
+afolname= os.listdir(rfolpath)
+afolname.sort()
+rfolname= [roiext for roiext in afolname if roiext != '.ipynb_checkpoints']
+
+dipath= '../data/dcm/*'
+diname= glob.glob(dipath)
+diname.sort()
 
 for fl in range(len(rfolname)):
 
-    rpath= "C:/Users/user/Untitled Folder/roi/"+rfolname[fl]+"/*"
+    rpath= "../data/roi/"+rfolname[fl]+"/*"
     rfname= glob.glob(rpath)
 
-    roiname= os.listdir("C:/Users/user/Untitled Folder/roi/"+rfolname[fl])
+    roiname= os.listdir("../data/roi/"+rfolname[fl])
     locset = []
     for rf in range(len(rfname)):
 
@@ -33,20 +41,31 @@ for fl in range(len(rfolname)):
             loc[lo]= (x[lo],y[lo])
 
         locset.append(loc)
+    for rc in range(len(diname)):
+        ds= pydicom.dcmread(diname[rc])
+        imwid= ds.Rows
+        imhei= ds.Columns
 
-    img= np.zeros((2048,2500,3), np.uint8)
-    for fw in range(len(locset)):
+        img= np.zeros((imwid,imhei), np.uint8)
 
-        img1= cv2.fillPoly(img, [locset[fw]], (255,255,255))
+        for fw in range(len(locset)):
 
-        
-    mskp= "C:/Users/user/Untitled Folder/mask/"
-    mskn= "%s.png" %rfolname[fl]
-    cv2.imwrite(mskp+mskn, img1)
-    
-    pimg= Image.open(mskp+mskn)
-    reimg= pimg.resize((512,512))
-    reimg.save(mskp+mskn)
+            img1= cv2.fillPoly(img, [locset[fw]], (255,255,255))
 
-#     plt.figure(figsize=(30,30))
-#     plt.imshow(img1)
+        mskp= "../data/msktest/"
+        mskn= "%s.png" %rfolname[fl]
+#         cv2.imwrite(mskp+mskn, img1)
+        oimg= cv2.imread(mskp+mskn)
+
+        rwid= int((imhei/imwid)*512)
+        rimg= oimg.resize(rwid, 512)
+#         rimg= cv2.resize(oimg, dsize=(rwid,512), interpolation=cv2.INTER_AREA)
+
+        bimg= np.zeros((512,512))
+        bimg[0:rwid, 0:512] = rimg
+#         cv2.imwrite("../data/msktest512/"+mskn, bimg)
+plt.figure(figsize=(10,10))
+plt.imshow(bimg, cmap='gray')
+
+#         plt.figure(figsize=(10,10))
+#         plt.imshow(img1, cmap='gray')
