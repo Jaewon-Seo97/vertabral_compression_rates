@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import glob
 import os
 import pydicom
-from PIL import Image
+
 
 rfolpath= "../data/roi"
 afolname= os.listdir(rfolpath)
@@ -43,8 +43,8 @@ for fl in range(len(rfolname)):
         locset.append(loc)
     for rc in range(len(diname)):
         ds= pydicom.dcmread(diname[rc])
-        imwid= ds.Rows
-        imhei= ds.Columns
+        imwid= ds.Columns
+        imhei= ds.Rows
 
         img= np.zeros((imwid,imhei), np.uint8)
 
@@ -54,18 +54,16 @@ for fl in range(len(rfolname)):
 
         mskp= "../data/msktest/"
         mskn= "%s.png" %rfolname[fl]
-#         cv2.imwrite(mskp+mskn, img1)
+        cv2.imwrite(mskp+mskn, img1)
         oimg= cv2.imread(mskp+mskn)
 
-        rwid= int((imhei/imwid)*512)
-        rimg= oimg.resize(rwid, 512)
-#         rimg= cv2.resize(oimg, dsize=(rwid,512), interpolation=cv2.INTER_AREA)
+        rwid= round(int((imwid/imhei)*512)
+        rimg= cv2.resize(oimg, dsize=(rwid,512), interpolation=cv2.INTER_AREA)
+        gray= cv2.cvtColor(rimg, cv2.COLOR_BGR2GRAY)
 
         bimg= np.zeros((512,512))
-        bimg[0:rwid, 0:512] = rimg
-#         cv2.imwrite("../data/msktest512/"+mskn, bimg)
-plt.figure(figsize=(10,10))
-plt.imshow(bimg, cmap='gray')
+        bimg[0:512, 0:rwid]= gray
+        cv2.imwrite("../data/msktest512/"+mskn, bimg)
 
 #         plt.figure(figsize=(10,10))
 #         plt.imshow(img1, cmap='gray')
